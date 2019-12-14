@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+    <script type="text/javascript" src="leaflet-routing-machine.js"></script>
+
+    <script src="https://cdn.maptiler.com/mapbox-gl-js/v0.53.0/mapbox-gl.js"></script>
+    <script src="https://cdn.maptiler.com/mapbox-gl-leaflet/latest/leaflet-mapbox-gl.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="leaflet-routing-machine.css">
+
+    <link rel="stylesheet" href="https://cdn.maptiler.com/mapbox-gl-js/v0.53.0/mapbox-gl.css" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        position: absolute;
+        top: 40px;
+        bottom: 0;
+        height: auto;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body onload="getLocation();">
+    <center><a href="https://personal-site-v2.000webhostapp.com/" alt="Personal Site">Pushkar Saraf</a></center>
+    <div id="map"></div>
+    <p id="data"></p>
+
+    <script type="text/javascript">
+
+      // Get 'live' location
+      var x = document.getElementById("data");
+
+      // Leaflet start
+      // Kolhapur coords
+      var map = L.map('map').setView([16.694590, 74.223053], 16);
+
+      var gl = L.mapboxGL({
+        attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
+        accessToken: 'not-needed',
+        style: 'https://api.maptiler.com/maps/streets/style.json?key=uFFSx26tKBnj0wOYp9TH'
+      }).addTo(map);
+
+      // Leaflet getLocation
+      function getLocation(){
+        if(navigator.geolocation){
+
+          navigator.geolocation.getCurrentPosition(function(location) {
+            let latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
+
+            // Directions
+            L.Routing.control({
+                waypoints: [
+                    L.latLng(latlng), // set to user location
+                    L.latLng(16.694823,74.222804) // mahalaxmi pay and park
+                ],
+                routeWhileDragging: false,
+                geocoder: L.Control.Geocoder.nominatim()
+            }).addTo(map);
+
+            L.Control.geocoder().addTo(map);
+
+            // Marker - User location
+            var markerUser = L.marker(latlng).addTo(map);
+            markerUser.bindPopup('<b>You are here.</b>').openPopup();
+
+            var circle = L.circle([location.coords.latitude, location.coords.longitude], {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: 200
+            }).addTo(map);
+
+            // Marker - Mahalaxmi Pay and Park
+            var marker = L.marker([16.694823,74.222804]).addTo(map);
+            marker.bindPopup('<b>Mahalaxmi Temple</b>');
+          });
+      } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+    </script>
+  </body>
+</html>
