@@ -54,41 +54,65 @@
       // Leaflet getLocation
       function getLocation(){
         if(navigator.geolocation){
-
-          navigator.geolocation.getCurrentPosition(function(location) {
-            let latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
-
-            // Directions
-            L.Routing.control({
-                waypoints: [
-                    L.latLng(latlng), // set to user location
-                    L.latLng(16.694823,74.222804) // mahalaxmi pay and park
-                ],
-                routeWhileDragging: false,
-                geocoder: L.Control.Geocoder.nominatim()
-            }).addTo(map);
-
-            L.Control.geocoder().addTo(map);
-
-            // Marker - User location
-            var markerUser = L.marker(latlng).addTo(map);
-            markerUser.bindPopup('<b>You are here.</b>').openPopup();
-
-            var circle = L.circle([location.coords.latitude, location.coords.longitude], {
-                color: 'red',
-                fillColor: '#f03',
-                fillOpacity: 0.5,
-                radius: 200
-            }).addTo(map);
-
-            // Marker - Mahalaxmi Pay and Park
-            var marker = L.marker([16.694823,74.222804]).addTo(map);
-            marker.bindPopup('<b>Mahalaxmi Temple</b>');
-          });
-      } else { 
-        x.innerHTML = "Geolocation is not supported by this browser.";
+          navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else { 
+          x.innerHTML = "Geolocation is not supported by this browser.";
+        }
       }
-    }
+
+      function showPosition(position) {
+        x.innerHTML = "Latitude: " + position.coords.latitude + 
+        "<br>Longitude: " + position.coords.longitude;
+      }
+
+      function showError(error) {
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            x.innerHTML = "User denied the request for Geolocation."
+            break;
+          case error.POSITION_UNAVAILABLE:
+            x.innerHTML = "Location information is unavailable."
+            break;
+          case error.TIMEOUT:
+            x.innerHTML = "The request to get user location timed out."
+            break;
+          case error.UNKNOWN_ERROR:
+            x.innerHTML = "An unknown error occurred."
+            break;
+        }
+      }
+
+      navigator.geolocation.getCurrentPosition(function(location) {
+        let latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
+
+        // Directions
+        L.Routing.control({
+            waypoints: [
+                L.latLng(latlng), // set to user location
+                L.latLng(16.694823,74.222804) // mahalaxmi pay and park
+            ],
+            routeWhileDragging: false,
+            geocoder: L.Control.Geocoder.nominatim()
+        }).addTo(map);
+
+        L.Control.geocoder().addTo(map);
+
+        // Marker - User location
+        var markerUser = L.marker(latlng).addTo(map);
+        markerUser.bindPopup('<b>You are here.</b>').openPopup();
+
+        var circle = L.circle([location.coords.latitude, location.coords.longitude], {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 200
+        }).addTo(map);
+
+        // Marker - Mahalaxmi Pay and Park
+        var marker = L.marker([16.694823,74.222804]).addTo(map);
+        marker.bindPopup('<b>Mahalaxmi Temple</b>');
+      });
+     
     </script>
   </body>
 </html>
