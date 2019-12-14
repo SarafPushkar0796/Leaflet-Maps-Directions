@@ -50,7 +50,7 @@
       // Leaflet getLocation
       function getLocation(){
         if(navigator.geolocation){
-          alert("Please wait for few seconds to get accurate location.");
+          alert("Please allow location access, and wait for few seconds to get accurate location. If the location is not accurate refresh the page.");
           navigator.geolocation.getCurrentPosition(showPosition, showError);
         } else { 
           console.log("Geolocation is not supported by this browser.");
